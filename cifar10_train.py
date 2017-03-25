@@ -37,6 +37,7 @@ from __future__ import division
 from __future__ import print_function
 
 from datetime import datetime
+import matplotlib.pyplot as plt
 import time
 
 import tensorflow as tf
@@ -44,19 +45,22 @@ import tensorflow as tf
 import cifar10
 
 FLAGS = tf.app.flags.FLAGS
-
+tf.app.flags.DEFINE_string('summaries_dir', 'summary',
+                           """Directory where to store summaries.""")
 tf.app.flags.DEFINE_string('train_dir', '/tmp/cifar10_train',
                            """Directory where to write event logs """
                            """and checkpoint.""")
-tf.app.flags.DEFINE_integer('max_steps', 1000000,
+tf.app.flags.DEFINE_integer('max_steps', 100000,
                             """Number of batches to run.""")
 tf.app.flags.DEFINE_boolean('log_device_placement', False,
                             """Whether to log device placement.""")
 tf.app.flags.DEFINE_integer('log_frequency', 10,
                             """How often to log results to the console.""")
 
+loss_values = []
 
 def train():
+  f = open('train_log.txt', 'w')
   """Train CIFAR-10 for a number of steps."""
   with tf.Graph().as_default():
     global_step = tf.contrib.framework.get_or_create_global_step()
@@ -93,6 +97,7 @@ def train():
           self._start_time = current_time
 
           loss_value = run_values.results
+          loss_values.append(loss_value)
           examples_per_sec = FLAGS.log_frequency * FLAGS.batch_size / duration
           sec_per_batch = float(duration / FLAGS.log_frequency)
 
@@ -100,6 +105,7 @@ def train():
                         'sec/batch)')
           print (format_str % (datetime.now(), self._step, loss_value,
                                examples_per_sec, sec_per_batch))
+          print(format_str % (datetime.now(), self._step, loss_value, examples_per_sec, sec_per_batch), file=f)
 
     with tf.train.MonitoredTrainingSession(
         checkpoint_dir=FLAGS.train_dir,
@@ -110,6 +116,7 @@ def train():
             log_device_placement=FLAGS.log_device_placement)) as mon_sess:
       while not mon_sess.should_stop():
         mon_sess.run(train_op)
+  f.close()
 
 
 def main(argv=None):  # pylint: disable=unused-argument
@@ -117,7 +124,15 @@ def main(argv=None):  # pylint: disable=unused-argument
   if tf.gfile.Exists(FLAGS.train_dir):
     tf.gfile.DeleteRecursively(FLAGS.train_dir)
   tf.gfile.MakeDirs(FLAGS.train_dir)
+
   train()
+  
+  plt.figure(1)                
+  plt.plot(loss_values, 'r')
+  plt.title('Loss Value at each step')
+  plt.ylabel('Loss')
+  plt.xlabel('Steps')
+  plt.savefig('graph.png', bbox_inches='tight')
 
 
 if __name__ == '__main__':
