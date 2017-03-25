@@ -1,0 +1,5 @@
+2017-03-25 20:37:27.027994: step 0, loss = 4.68 (57.7 examples/sec; 2.219 sec/batch)
+2017-03-25 20:37:28.515363: step 10, loss = 4.60 (860.6 examples/sec; 0.149 sec/batch)
+2017-03-25 20:37:30.189781: step 20, loss = 4.46 (764.4 examples/sec; 0.167 sec/batch)
+2017-03-25 20:37:31.908992: step 30, loss = 4.50 (744.5 examples/sec; 0.172 sec/batch)
+2017-03-25 20:37:33.640925: step 40, loss = 4.38 (739.1 examples/sec; 0.173 sec/batch)
