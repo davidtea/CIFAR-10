@@ -37,7 +37,10 @@ from __future__ import division
 from __future__ import print_function
 
 from datetime import datetime
+import matplotlib as mpl
+mpl.use('Agg')
 import matplotlib.pyplot as plt
+
 import time
 
 import tensorflow as tf
@@ -50,7 +53,7 @@ tf.app.flags.DEFINE_string('summaries_dir', 'summary',
 tf.app.flags.DEFINE_string('train_dir', '/tmp/cifar10_train',
                            """Directory where to write event logs """
                            """and checkpoint.""")
-tf.app.flags.DEFINE_integer('max_steps', 100000,
+tf.app.flags.DEFINE_integer('max_steps', 50,
                             """Number of batches to run.""")
 tf.app.flags.DEFINE_boolean('log_device_placement', False,
                             """Whether to log device placement.""")
@@ -127,12 +130,12 @@ def main(argv=None):  # pylint: disable=unused-argument
 
   train()
   
-  plt.figure(1)                
+  fig = plt.figure()                
   plt.plot(loss_values, 'r')
   plt.title('Loss Value at each step')
   plt.ylabel('Loss')
   plt.xlabel('Steps')
-  plt.savefig('graph.png', bbox_inches='tight')
+  fig.savefig('graph.png', bbox_inches='tight')
 
 
 if __name__ == '__main__':
