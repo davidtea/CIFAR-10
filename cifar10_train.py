@@ -37,6 +37,8 @@ from __future__ import division
 from __future__ import print_function
 
 from datetime import datetime
+import numpy as np
+# Save to file in aws terminal
 import matplotlib as mpl
 mpl.use('Agg')
 import matplotlib.pyplot as plt
@@ -53,7 +55,7 @@ tf.app.flags.DEFINE_string('summaries_dir', 'summary',
 tf.app.flags.DEFINE_string('train_dir', '/tmp/cifar10_train',
                            """Directory where to write event logs """
                            """and checkpoint.""")
-tf.app.flags.DEFINE_integer('max_steps', 50,
+tf.app.flags.DEFINE_integer('max_steps', 25000,
                             """Number of batches to run.""")
 tf.app.flags.DEFINE_boolean('log_device_placement', False,
                             """Whether to log device placement.""")
@@ -63,7 +65,9 @@ tf.app.flags.DEFINE_integer('log_frequency', 10,
 loss_values = []
 
 def train():
+  # Save output to file
   f = open('train_log.txt', 'w')
+
   """Train CIFAR-10 for a number of steps."""
   with tf.Graph().as_default():
     global_step = tf.contrib.framework.get_or_create_global_step()
@@ -106,8 +110,7 @@ def train():
 
           format_str = ('%s: step %d, loss = %.2f (%.1f examples/sec; %.3f '
                         'sec/batch)')
-          print (format_str % (datetime.now(), self._step, loss_value,
-                               examples_per_sec, sec_per_batch))
+          print (format_str % (datetime.now(), self._step, loss_value, examples_per_sec, sec_per_batch))
           print(format_str % (datetime.now(), self._step, loss_value, examples_per_sec, sec_per_batch), file=f)
 
     with tf.train.MonitoredTrainingSession(
@@ -130,9 +133,10 @@ def main(argv=None):  # pylint: disable=unused-argument
 
   train()
   
-  fig = plt.figure()                
-  plt.plot(loss_values, 'r')
-  plt.title('Loss Value at each step')
+  print("Lowest loss:", min(loss_values))
+  fig = plt.figure()     
+  plt.plot([x for x in range(0, len(loss_values)*10,  int(len(loss_values)/100)*10)], [loss_values[x] for x in range(0, len(loss_values), int(len(loss_values)/100))], 'r')
+  plt.title('Loss Value')
   plt.ylabel('Loss')
   plt.xlabel('Steps')
   fig.savefig('graph.png', bbox_inches='tight')
