@@ -1,8 +1,6 @@
-'''Train a simple deep CNN on the CIFAR10 small images dataset.
+'''Using VGGNet-16 on the CIFAR10 small images dataset.
 
-GPU run command with Theano backend (with TensorFlow, the GPU is automatically used):
-    THEANO_FLAGS=mode=FAST_RUN,device=gpu,floatx=float32 python cifar10_cnn.py
-
+Code for VGGNet architecture from: https://gist.github.com/baraldilorenzo/07d7802847aaad0a35d3
 
 '''
 
@@ -22,9 +20,9 @@ import cv2, numpy as np
 
 now = time.time()
 
-batch_size = 64
+batch_size = 32
 num_classes = 10
-epochs = 100
+epochs = 25
 data_augmentation = True
 
 # input image dimensions
@@ -44,6 +42,7 @@ y_test = keras.utils.to_categorical(y_test, num_classes)
 
 model = Sequential()
 
+# Block 1
 model.add(ZeroPadding2D((1,1),input_shape=x_train.shape[1:]))
 model.add(Conv2D(64, (3, 3)))
 model.add(Activation('relu'))
@@ -52,6 +51,7 @@ model.add(Conv2D(64, (3, 3)))
 model.add(Activation('relu'))
 model.add(MaxPooling2D((2,2), strides=(2,2)))
 
+# Block 2
 model.add(ZeroPadding2D((1,1)))
 model.add(Conv2D(128, (3, 3)))
 model.add(Activation('relu'))
@@ -60,6 +60,7 @@ model.add(Conv2D(128, (3, 3)))
 model.add(Activation('relu'))
 model.add(MaxPooling2D((2,2), strides=(2,2)))
 
+# Block 3
 model.add(ZeroPadding2D((1,1)))
 model.add(Conv2D(256, (3, 3)))
 model.add(Activation('relu'))
@@ -71,6 +72,7 @@ model.add(Conv2D(256, (3, 3)))
 model.add(Activation('relu'))
 model.add(MaxPooling2D((2,2), strides=(2,2)))
 
+# Block 4
 model.add(ZeroPadding2D((1,1)))
 model.add(Conv2D(512, (3, 3)))
 model.add(Activation('relu'))
@@ -82,6 +84,7 @@ model.add(Conv2D(512, (3, 3)))
 model.add(Activation('relu'))
 model.add(MaxPooling2D((2,2), strides=(2,2)))
 
+# Block 5
 model.add(ZeroPadding2D((1,1)))
 model.add(Conv2D(512, (3, 3)))
 model.add(Activation('relu'))
@@ -94,23 +97,28 @@ model.add(Activation('relu'))
 model.add(MaxPooling2D((2,2), strides=(2,2)))
 
 model.add(Flatten())
-model.add(Dense(4096, activation='relu'))
+model.add(Dense(4096))
+model.add(Activation('relu'))
 model.add(Dropout(0.5))
-model.add(Dense(4096, activation='relu'))
+model.add(Dense(4096))
+model.add(Activation('relu'))
 model.add(Dropout(0.5))
-model.add(Dense(num_classes, activation='softmax'))
+model.add(Dense(num_classes))
+model.add(Activation('softmax'))
 
-# Let's train the model using RMSprop
-model.compile(loss='categorical_crossentropy',
-              optimizer=SGD(lr=0.1, decay=1e-6, momentum=0.9, nesterov=True),
-              metrics=['accuracy'])
 
+#sgd = SGD(lr=0.1, decay=1e-3, momentum=1.0, nesterov=True)
+adam = keras.optimizers.Adam(lr=0.001)
+model.compile(loss='categorical_crossentropy', optimizer=adam, metrics=['accuracy'])
+
+'''
 x_train = x_train.astype('float32')
 x_test = x_test.astype('float32')
 x_train /= 255
 x_test /= 255
+'''
 
-hist = model.fit(x_train, y_train, batch_size=batch_size, epochs=1, validation_data=(x_test, y_test), shuffle=True)
+hist = model.fit(x_train, y_train, batch_size=batch_size, epochs=epochs, validation_data=(x_test, y_test), shuffle=True)
 train_loss = hist.history['loss']
 train_accuracy = hist.history['acc']
 test_loss = hist.history['val_loss']
