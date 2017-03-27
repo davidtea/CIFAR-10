@@ -4,13 +4,11 @@ Code for VGGNet architecture from: https://gist.github.com/baraldilorenzo/07d780
 Code for Cifar-10 preprocessing: https://github.com/fchollet/keras/blob/master/examples/cifar10_cnn.py
 
 '''
-
-
+from __future__ import print_function
 import time
 import matplotlib as mpl
 mpl.use('Agg')    # Save graph to file
 import matplotlib.pyplot as plt
-from __future__ import print_function
 import keras
 from keras.datasets import cifar10
 from keras.preprocessing.image import ImageDataGenerator
@@ -45,43 +43,43 @@ y_test = keras.utils.to_categorical(y_test, num_classes)
 model = Sequential()
 
 # Block 1
-model.add(Conv2D(64, (3, 3), padding='same',input_shape=x_train.shape[1:]))
+model.add(Conv2D(32, (3, 3), padding='same',input_shape=x_train.shape[1:]))
+model.add(Activation('relu'))
+model.add(ZeroPadding2D((1,1)))
+model.add(Conv2D(32, (3, 3)))
+model.add(Activation('relu'))
+model.add(MaxPooling2D(pool_size=(2, 2)))
+
+# Block 2
+model.add(ZeroPadding2D((1,1)))
+model.add(Conv2D(64, (3, 3)))
 model.add(Activation('relu'))
 model.add(ZeroPadding2D((1,1)))
 model.add(Conv2D(64, (3, 3)))
 model.add(Activation('relu'))
 model.add(MaxPooling2D(pool_size=(2, 2)))
 
-# Block 2
-model.add(ZeroPadding2D((1,1)))
-model.add(Conv2D(128, (3, 3)))
-model.add(Activation('relu'))
-model.add(ZeroPadding2D((1,1)))
-model.add(Conv2D(128, (3, 3)))
-model.add(Activation('relu'))
-model.add(MaxPooling2D(pool_size=(2, 2)))
-
 # Block 3
 model.add(ZeroPadding2D((1,1)))
-model.add(Conv2D(256, (3, 3)))
+model.add(Conv2D(128, (3, 3)))
 model.add(Activation('relu'))
 model.add(ZeroPadding2D((1,1)))
-model.add(Conv2D(256, (3, 3)))
+model.add(Conv2D(128, (3, 3)))
 model.add(Activation('relu'))
 model.add(ZeroPadding2D((1,1)))
-model.add(Conv2D(256, (3, 3)))
+model.add(Conv2D(128, (3, 3)))
 model.add(Activation('relu'))
 model.add(MaxPooling2D(pool_size=(2, 2)))
 
 # Block 4
 model.add(ZeroPadding2D((1,1)))
-model.add(Conv2D(512, (3, 3)))
+model.add(Conv2D(256, (3, 3)))
 model.add(Activation('relu'))
 model.add(ZeroPadding2D((1,1)))
-model.add(Conv2D(512, (3, 3)))
+model.add(Conv2D(256, (3, 3)))
 model.add(Activation('relu'))
 model.add(ZeroPadding2D((1,1)))
-model.add(Conv2D(512, (3, 3)))
+model.add(Conv2D(256, (3, 3)))
 model.add(Activation('relu'))
 model.add(MaxPooling2D(pool_size=(2, 2)))
 
@@ -98,10 +96,10 @@ model.add(Activation('relu'))
 model.add(MaxPooling2D(pool_size=(2, 2)))
 
 model.add(Flatten())
-model.add(Dense(512))
+model.add(Dense(1024))
 model.add(Activation('relu'))
 model.add(Dropout(0.25))
-model.add(Dense(512))
+model.add(Dense(1024))
 model.add(Activation('relu'))
 model.add(Dropout(0.25))
 model.add(Dense(num_classes))
@@ -139,8 +137,7 @@ print("History object being assigned!")
 hist = model.fit_generator(datagen.flow(x_train, y_train, batch_size=batch_size), 
                            steps_per_epoch=x_train.shape[0] // batch_size,
                            epochs=epochs,
-                           validation_data=(x_test, y_test),
-                           verbose = 2)
+                           validation_data=(x_test, y_test))
 
 #hist = model.fit(x_train, y_train, batch_size=batch_size, epochs=epochs, validation_data=(x_test, y_test), shuffle=True)
 print("Taking History Values!")
