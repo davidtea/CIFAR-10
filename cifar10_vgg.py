@@ -1,4 +1,4 @@
-'''Using VGGNet-16 on the CIFAR10 small images dataset. Using SGD optimizer.
+'''Using VGGNet-16 on the CIFAR10 small images dataset. Using SGD optimizer and Adam optimizer.
 
 Code for VGGNet architecture from: https://gist.github.com/baraldilorenzo/07d7802847aaad0a35d3
 Code for Cifar-10 preprocessing: https://github.com/fchollet/keras/blob/master/examples/cifar10_cnn.py
@@ -100,6 +100,7 @@ model.add(Dropout(0.5))
 model.add(Dense(num_classes))
 model.add(Activation('softmax'))
 
+adam = keras.optimizers.Adam(lr=0.0005)
 sgd = SGD(lr=0.0005, decay=1e-5, momentum=0.9, nesterov=True)
 model.compile(loss='categorical_crossentropy', optimizer=sgd, metrics=['accuracy'])
 
