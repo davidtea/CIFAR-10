@@ -42,7 +42,7 @@ y_test = keras.utils.to_categorical(y_test, num_classes)
 
 model = Sequential()
 
-model.add(ZeroPadding2D((1,1), input_shape=(224,224,3)))
+model.add(ZeroPadding2D((1,1), input_shape=(32,32,3)))
 model.add(Conv2D(64, (3, 3)))
 model.add(Activation('relu'))
 model.add(ZeroPadding2D((1,1)))
@@ -107,6 +107,7 @@ model.compile(loss='categorical_crossentropy', optimizer=sgd, metrics=['accuracy
 
 # Resize 32x32 image to work with VGGNet's original input size of 224x224 from imagenet
 # Resize in batch due to memory issues
+'''
 now = time.time()
 resized_x_train = []
 resized_x_test = []
@@ -123,7 +124,9 @@ del x_test
 
 x_train = np.asarray(resized_x_train)
 x_test = np.asarray(resized_x_test)
-
+'''
+x_train = x_train.astype('float32')
+x_test = x_test.astype('float32')
 x_train /= 255
 x_test /= 255
 
