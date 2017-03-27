@@ -21,7 +21,7 @@ import numpy as np
 
 batch_size = 50
 num_classes = 10
-epochs = 100
+epochs = 2
 data_augmentation = True
 
 # input image dimensions
