@@ -1,4 +1,4 @@
-'''Using VGGNet-16 on the CIFAR10 small images dataset.
+'''Using AlexNet on the CIFAR10 small images dataset. Using SGD
 
 Code for VGGNet architecture from: https://gist.github.com/baraldilorenzo/07d7802847aaad0a35d3
 Code for Cifar-10 preprocessing: https://github.com/fchollet/keras/blob/master/examples/cifar10_cnn.py
@@ -136,14 +136,14 @@ print(hist.history[-1])
 fig = plt.figure(1)     
 plt.plot(train_accuracy, 'r', test_accuracy, 'b')
 plt.title('VGGNet Accuracy')
-plt.ylabel('Train and Test Accuracy')
+plt.ylabel('Train(Red) and Test(Blue) Accuracy')
 plt.xlabel('Epochs')
 fig.savefig('acc_graph.png', bbox_inches='tight')
 
 fig = plt.figure(2)     
 plt.plot(train_loss, 'r', test_loss, 'b')
 plt.title('VGGNet Loss')
-plt.ylabel('Train and Test Loss')
+plt.ylabel('Train(Red) and Test(Blue) Loss')
 plt.xlabel('Epochs')
 fig.savefig('loss_graph.png', bbox_inches='tight')
 
