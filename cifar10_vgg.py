@@ -44,8 +44,7 @@ y_test = keras.utils.to_categorical(y_test, num_classes)
 model = Sequential()
 
 # Block 1
-model.add(ZeroPadding2D((1,1),input_shape=x_train.shape[1:]))
-model.add(Conv2D(64, (3, 3)))
+model.add(Conv2D(64, (3, 3), padding='same',input_shape=x_train.shape[1:]))
 model.add(Activation('relu'))
 model.add(ZeroPadding2D((1,1)))
 model.add(Conv2D(64, (3, 3)))
@@ -111,12 +110,12 @@ sgd = SGD(lr=1.0, decay=1e-5, momentum=0.9, nesterov=True)
 adam = keras.optimizers.Adam(lr=1)
 model.compile(loss='categorical_crossentropy', optimizer=adam, metrics=['accuracy'])
 
-'''
+
 x_train = x_train.astype('float32')
 x_test = x_test.astype('float32')
 x_train /= 255
 x_test /= 255
-'''
+
 
 datagen = ImageDataGenerator(
         featurewise_center=False,  # set input mean to 0 over the dataset
