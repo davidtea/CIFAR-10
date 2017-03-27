@@ -20,7 +20,7 @@ import cv2, numpy as np
 import scipy
 
 
-batch_size = 32
+batch_size = 100
 num_classes = 10
 epochs = 50
 data_augmentation = True
@@ -105,23 +105,25 @@ sgd = SGD(lr=0.0005, decay=1e-5, momentum=0.9, nesterov=True)
 adam = keras.optimizers.Adam(lr=0.01)
 model.compile(loss='categorical_crossentropy', optimizer=sgd, metrics=['accuracy'])
 
+# Resize 32x32 image to work with VGGNet's original input size of 224x224 from imagenet
+# Resize in batch due to memory issues
 now = time.time()
-
 resized_x_train = []
 resized_x_test = []
-
-# Normalize
 for i in range(len(x_train)):
-#for i in range(100):
+    #for i in range(100):
     resized_x_train.append( scipy.misc.imresize(x_train[i], (224, 224)).astype('float32') )
 for i in range(len(x_test)):
-#for i in range(100):
+    #for i in range(100):
     resized_x_test.append( scipy.misc.imresize(x_test[i], (224, 224)).astype('float32') )
-
+    
 print("Time Elapsed to resize:", time.time() - now)
+del x_train
+del x_test
 
 x_train = np.asarray(resized_x_train)
 x_test = np.asarray(resized_x_test)
+
 x_train /= 255
 x_test /= 255
 
