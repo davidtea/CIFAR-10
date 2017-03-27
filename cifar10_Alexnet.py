@@ -42,63 +42,35 @@ y_test = keras.utils.to_categorical(y_test, num_classes)
 
 model = Sequential()
 
-model.add(ZeroPadding2D((1,1), input_shape=(224,224,3)))
-model.add(Conv2D(64, (3, 3)))
+model.add(Conv2D(64, 3, 11, 11, border_mode='full'))
+model.add(BatchNormalization((64,226,226)))
 model.add(Activation('relu'))
-model.add(ZeroPadding2D((1,1)))
-model.add(Conv2D(64, (3, 3)))
-model.add(Activation('relu'))
-model.add(MaxPooling2D(pool_size=(2, 2)))
+model.add(MaxPooling2D(poolsize=(3, 3)))
 
-model.add(ZeroPadding2D((1,1)))
-model.add(Conv2D(128, (3, 3)))
+model.add(Conv2D(128, 64, 7, 7, border_mode='full'))
+model.add(BatchNormalization((128,115,115)))
 model.add(Activation('relu'))
-model.add(ZeroPadding2D((1,1)))
-model.add(Conv2D(128, (3, 3)))
-model.add(Activation('relu'))
-model.add(MaxPooling2D(pool_size=(2, 2)))
+model.add(MaxPooling2D(poolsize=(3, 3)))
 
-model.add(ZeroPadding2D((1,1)))
-model.add(Conv2D(256, (3, 3)))
+model.add(Conv2D(192, 128, 3, 3, border_mode='full'))
+model.add(BatchNormalization((128,112,112)))
 model.add(Activation('relu'))
-model.add(ZeroPadding2D((1,1)))
-model.add(Conv2D(256, (3, 3)))
-model.add(Activation('relu'))
-model.add(ZeroPadding2D((1,1)))
-model.add(Conv2D(256, (3, 3)))
-model.add(Activation('relu'))
-model.add(MaxPooling2D(pool_size=(2, 2)))
+model.add(MaxPooling2D(poolsize=(3, 3)))
 
-model.add(ZeroPadding2D((1,1)))
-model.add(Conv2D(512, (3, 3)))
+model.add(Conv2D(256, 192, 3, 3, border_mode='full'))
+model.add(BatchNormalization((128,108,108)))
 model.add(Activation('relu'))
-model.add(ZeroPadding2D((1,1)))
-model.add(Conv2D(512, (3, 3)))
-model.add(Activation('relu'))
-model.add(ZeroPadding2D((1,1)))
-model.add(Conv2D(512, (3, 3)))
-model.add(Activation('relu'))
-model.add(MaxPooling2D(pool_size=(2, 2)))
-
-model.add(ZeroPadding2D((1,1)))
-model.add(Conv2D(512, (3, 3)))
-model.add(Activation('relu'))
-model.add(ZeroPadding2D((1,1)))
-model.add(Conv2D(512, (3, 3)))
-model.add(Activation('relu'))
-model.add(ZeroPadding2D((1,1)))
-model.add(Conv2D(512, (3, 3)))
-model.add(Activation('relu'))
-model.add(MaxPooling2D(pool_size=(2, 2)))
+model.add(MaxPooling2D(poolsize=(3, 3)))
 
 model.add(Flatten())
-model.add(Dense(4096))
+model.add(Dense(12*12*256, 4096, init='normal'))
+model.add(BatchNormalization(4096))
 model.add(Activation('relu'))
-model.add(Dropout(0.5))
-model.add(Dense(4096))
+model.add(Dense(4096, 4096, init='normal'))
+model.add(BatchNormalization(4096))
 model.add(Activation('relu'))
-model.add(Dropout(0.5))
-model.add(Dense(num_classes))
+model.add(Dense(4096, 1000, init='normal'))
+model.add(BatchNormalization(1000))
 model.add(Activation('softmax'))
 
 sgd = SGD(lr=0.0005, decay=1e-5, momentum=0.9, nesterov=True)
@@ -106,6 +78,7 @@ adam = keras.optimizers.Adam(lr=0.01)
 model.compile(loss='categorical_crossentropy', optimizer=sgd, metrics=['accuracy'])
 
 now = time.time()
+
 
 resized_x_train = []
 resized_x_test = []
@@ -120,12 +93,16 @@ for i in range(100):
 
 print("Time Elapsed to resize:", time.time() - now)
 
+'''
+x_train = x_train.astype('float32')
+x_test = x_test.astype('float32')
+'''
+
 x_train = np.asarray(resized_x_train)
 x_test = np.asarray(resized_x_test)
 x_train /= 255
 x_test /= 255
 
-'''
 datagen = ImageDataGenerator(
         featurewise_center=False,  # set input mean to 0 over the dataset
         samplewise_center=False,  # set each sample mean to 0
@@ -148,14 +125,8 @@ hist = model.fit_generator(datagen.flow(x_train, y_train[:100], batch_size=batch
                            steps_per_epoch=x_train.shape[0] // batch_size,
                            epochs=epochs,
                            validation_data=(x_test, y_test[:100]))
-'''
 
-hist = model.fit(x_train, y_train[:100],
-              batch_size=batch_size,
-              epochs=epochs,
-              validation_data=(x_test, y_test[:100]),
-              shuffle=True)
-
+#hist = model.fit(x_train, y_train, batch_size=batch_size, epochs=epochs, validation_data=(x_test, y_test), shuffle=True)
 print("Taking History Values!")
 train_loss = hist.history['loss']
 train_accuracy = hist.history['acc']
