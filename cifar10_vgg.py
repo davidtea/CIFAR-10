@@ -22,7 +22,7 @@ import scipy
 
 batch_size = 32
 num_classes = 10
-epochs = 25
+epochs = 50
 data_augmentation = True
 
 # input image dimensions
@@ -111,11 +111,11 @@ resized_x_train = []
 resized_x_test = []
 
 # Normalize
-#for i in range(len(x_train)):
-for i in range(100):
+for i in range(len(x_train)):
+#for i in range(100):
     resized_x_train.append( scipy.misc.imresize(x_train[i], (224, 224)).astype('float32') )
-#for i in range(len(x_test)):
-for i in range(100):
+for i in range(len(x_test)):
+#for i in range(100):
     resized_x_test.append( scipy.misc.imresize(x_test[i], (224, 224)).astype('float32') )
 
 print("Time Elapsed to resize:", time.time() - now)
@@ -150,10 +150,10 @@ hist = model.fit_generator(datagen.flow(x_train, y_train[:100], batch_size=batch
                            validation_data=(x_test, y_test[:100]))
 '''
 
-hist = model.fit(x_train, y_train[:100],
+hist = model.fit(x_train, y_train,
               batch_size=batch_size,
               epochs=epochs,
-              validation_data=(x_test, y_test[:100]),
+              validation_data=(x_test, y_test),
               shuffle=True)
 
 print("Taking History Values!")
@@ -161,7 +161,7 @@ train_loss = hist.history['loss']
 train_accuracy = hist.history['acc']
 test_loss = hist.history['val_loss']
 test_accuracy = hist.history['val_acc']
-print(hist.history[-1])
+print(hist.history)
 
 fig = plt.figure(1)     
 plt.plot(train_accuracy, 'r', test_accuracy, 'b')

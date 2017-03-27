@@ -20,9 +20,9 @@ import cv2, numpy as np
 import scipy
 
 
-batch_size = 32
+batch_size = 100
 num_classes = 10
-epochs = 25
+epochs = 50
 data_augmentation = True
 
 # input image dimensions
@@ -144,7 +144,7 @@ fig.savefig('acc_graph.png', bbox_inches='tight')
 fig = plt.figure(2)     
 plt.plot(train_loss, 'r', test_loss, 'b')
 plt.title('VGGNet Loss')
-plt.ylabel('Train and Test Loss)
+plt.ylabel('Train and Test Loss')
 plt.xlabel('Epochs')
 fig.savefig('loss_graph.png', bbox_inches='tight')
 
