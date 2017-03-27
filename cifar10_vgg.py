@@ -156,7 +156,7 @@ hist = model.fit_generator(datagen.flow(x_train, y_train, batch_size=batch_size)
 
 print("Time Elapsed:", time.time() - now)
 
-plot_model(model, to_file='vgg_model.png', show_shapes=True)
+plot_model(model, to_file='vgg_model.png')
 train_loss = hist.history['loss']
 train_accuracy = hist.history['acc']
 test_loss = hist.history['val_loss']
