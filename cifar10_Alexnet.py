@@ -96,8 +96,6 @@ print("Time Elapsed to resize:", time.time() - now)
 x_train = x_train.astype('float32')
 x_test = x_test.astype('float32')
 '''
-del x_train
-del x_test
 
 x_train = np.asarray(resized_x_train)
 x_test = np.asarray(resized_x_test)
