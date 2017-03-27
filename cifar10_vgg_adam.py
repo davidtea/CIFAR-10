@@ -1,4 +1,4 @@
-'''Using VGGNet-16 on the CIFAR10 small images dataset. Using SGD optimizer.
+'''Using VGGNet-16 on the CIFAR10 small images dataset. Using Adam optimizer.
 
 Code for VGGNet architecture from: https://gist.github.com/baraldilorenzo/07d7802847aaad0a35d3
 Code for Cifar-10 preprocessing: https://github.com/fchollet/keras/blob/master/examples/cifar10_cnn.py
@@ -100,8 +100,8 @@ model.add(Dropout(0.5))
 model.add(Dense(num_classes))
 model.add(Activation('softmax'))
 
-sgd = SGD(lr=0.0005, decay=1e-5, momentum=0.9, nesterov=True)
-model.compile(loss='categorical_crossentropy', optimizer=sgd, metrics=['accuracy'])
+adam = keras.optimizers.Adam(lr=0.0005)
+model.compile(loss='categorical_crossentropy', optimizer=adam, metrics=['accuracy'])
 
 now = time.time()
 
@@ -135,7 +135,7 @@ hist = model.fit_generator(datagen.flow(x_train, y_train, batch_size=batch_size)
 
 print("Time Elapsed:", time.time() - now)
 
-plot_model(model, to_file='vgg_model.png', show_shapes=True)
+plot_model(model, to_file='vgg_model_adam.png', show_shapes=True)
 train_loss = hist.history['loss']
 train_accuracy = hist.history['acc']
 test_loss = hist.history['val_loss']
@@ -147,12 +147,12 @@ plt.plot(train_accuracy, 'r', test_accuracy, 'b')
 plt.title('VGGNet Accuracy')
 plt.ylabel('Train and Test Accuracy')
 plt.xlabel('Epochs')
-fig.savefig('vgg_acc_graph.png', bbox_inches='tight')
+fig.savefig('vgg_acc_graph_adam.png', bbox_inches='tight')
 
 fig = plt.figure(2)     
 plt.plot(train_loss, 'r', test_loss, 'b')
 plt.title('VGGNet Loss')
 plt.ylabel('Train and Test Loss')
 plt.xlabel('Epochs')
-fig.savefig('vgg_loss_graph.png', bbox_inches='tight')
+fig.savefig('vgg_loss_graph_adam.png', bbox_inches='tight')
 
