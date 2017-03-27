@@ -21,7 +21,7 @@ import numpy as np
 
 batch_size = 50
 num_classes = 10
-epochs = 2
+epochs = 100
 data_augmentation = True
 
 # input image dimensions
@@ -156,7 +156,7 @@ hist = model.fit_generator(datagen.flow(x_train, y_train, batch_size=batch_size)
 
 print("Time Elapsed:", time.time() - now)
 
-plot_model(model, to_file='vgg_model.png')
+plot_model(model, to_file='vgg_model.png', show_shapes=True)
 train_loss = hist.history['loss']
 train_accuracy = hist.history['acc']
 test_loss = hist.history['val_loss']
