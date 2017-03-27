@@ -17,12 +17,12 @@ from keras.layers import Flatten, Dense, Dropout, Activation
 from keras.layers import Conv2D, MaxPooling2D, ZeroPadding2D
 from keras.optimizers import SGD
 import cv2, numpy as np
+import scipy
 
-now = time.time()
 
 batch_size = 32
 num_classes = 10
-epochs = 2
+epochs = 25
 data_augmentation = True
 
 # input image dimensions
@@ -42,7 +42,7 @@ y_test = keras.utils.to_categorical(y_test, num_classes)
 
 model = Sequential()
 
-model.add(ZeroPadding2D((1,1), input_shape=x_train.shape[1:]))
+model.add(ZeroPadding2D((1,1), input_shape=(32,32,3)))
 model.add(Conv2D(64, (3, 3)))
 model.add(Activation('relu'))
 model.add(ZeroPadding2D((1,1)))
@@ -101,16 +101,35 @@ model.add(Dropout(0.5))
 model.add(Dense(num_classes))
 model.add(Activation('softmax'))
 
-sgd = SGD(lr=0.01, decay=1e-5, momentum=0.9, nesterov=True)
-adam = keras.optimizers.Adam(lr=0.1)
+sgd = SGD(lr=0.0005, decay=1e-5, momentum=0.9, nesterov=True)
+adam = keras.optimizers.Adam(lr=0.01)
 model.compile(loss='categorical_crossentropy', optimizer=sgd, metrics=['accuracy'])
 
+now = time.time()
+
+'''
+resized_x_train = []
+resized_x_test = []
 # Normalize
+#for i in range(len(x_train)):
+for i in range(2):
+    resized_x_train.append( scipy.misc.imresize(x_train[i], (224, 224)).astype('float32') )
+#for i in range(len(x_test)):
+for i in range(2):
+    resized_x_test.append( scipy.misc.imresize(x_test[i], (224, 224)).astype('float32') )
+
+print("Time Elapsed to resize:", time.time() - now)
+
+'''
 x_train = x_train.astype('float32')
 x_test = x_test.astype('float32')
+'''
+print(x_train[0], resized_x_train[0])
+x_train = resized_x_train
+x_test = resized_x_test
+'''
 x_train /= 255
 x_test /= 255
-
 
 datagen = ImageDataGenerator(
         featurewise_center=False,  # set input mean to 0 over the dataset
@@ -122,7 +141,7 @@ datagen = ImageDataGenerator(
         width_shift_range=0.1,  # randomly shift images horizontally (fraction of total width)
         height_shift_range=0.1,  # randomly shift images vertically (fraction of total height)
         horizontal_flip=True,  # randomly flip images
-        vertical_flip=False)  # randomly flip images
+        vertical_flip=False)   # randomly flip images  
 
 # Compute quantities required for featurewise normalization
 # (std, mean, and principal components if ZCA whitening is applied).
@@ -150,4 +169,3 @@ plt.ylabel('Train and Test Accuracy/Loss')
 plt.xlabel('Epochs')
 fig.savefig('graph.png', bbox_inches='tight')
 
-print("Time Elapsed:", time.time() - now)
