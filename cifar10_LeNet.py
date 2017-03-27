@@ -59,7 +59,7 @@ model.add(Activation('softmax'))
 
 adam = keras.optimizers.Adam(lr=0.0005)
 sgd = SGD(lr=0.0005, decay=1e-5, momentum=0.9, nesterov=True)
-model.compile(loss='categorical_crossentropy', optimizer=sgd, metrics=['accuracy'])
+model.compile(loss='categorical_crossentropy', optimizer=adam, metrics=['accuracy'])
 
 now = time.time()
 
@@ -93,7 +93,7 @@ hist = model.fit_generator(datagen.flow(x_train, y_train, batch_size=batch_size)
 
 print("Time Elapsed:", time.time() - now)
 
-plot_model(model, to_file='lenet_model.png', show_shapes=True)
+plot_model(model, to_file='lenet_model_adam.png', show_shapes=True)
 train_loss = hist.history['loss']
 train_accuracy = hist.history['acc']
 test_loss = hist.history['val_loss']
@@ -105,11 +105,11 @@ plt.plot(train_accuracy, 'r', test_accuracy, 'b')
 plt.title('LeNet Accuracy')
 plt.ylabel('Train(Red) and Test(Blue) Accuracy')
 plt.xlabel('Epochs')
-fig.savefig('lenet_acc_graph.png', bbox_inches='tight')
+fig.savefig('lenet_acc_graph_adam.png', bbox_inches='tight')
 
 fig = plt.figure(2)     
 plt.plot(train_loss, 'r', test_loss, 'b')
 plt.title('LeNet Loss')
 plt.ylabel('Train(Red) and Test(Blue) Loss')
 plt.xlabel('Epochs')
-fig.savefig('lenet_loss_graph.png', bbox_inches='tight')
+fig.savefig('lenet_loss_graph_adam.png', bbox_inches='tight')

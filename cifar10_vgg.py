@@ -1,7 +1,7 @@
 '''Using VGGNet-16 on the CIFAR10 small images dataset. Using SGD optimizer and Adam optimizer.
 
-Code for VGGNet architecture from: https://gist.github.com/baraldilorenzo/07d7802847aaad0a35d3
 Code for Cifar-10 preprocessing: https://github.com/fchollet/keras/blob/master/examples/cifar10_cnn.py
+Code for VGGNet architecture from: https://gist.github.com/baraldilorenzo/07d7802847aaad0a35d3
 
 '''
 from __future__ import print_function
