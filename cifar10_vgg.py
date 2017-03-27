@@ -42,6 +42,7 @@ y_test = keras.utils.to_categorical(y_test, num_classes)
 
 model = Sequential()
 
+'''
 # Block 1
 model.add(Conv2D(32, (3, 3), padding='same',input_shape=x_train.shape[1:]))
 model.add(Activation('relu'))
@@ -100,6 +101,27 @@ model.add(Dense(1024))
 model.add(Activation('relu'))
 model.add(Dropout(0.5))
 model.add(Dense(1024))
+model.add(Activation('relu'))
+model.add(Dropout(0.5))
+model.add(Dense(num_classes))
+model.add(Activation('softmax'))
+'''
+model.add(Conv2D(32, (3, 3), padding='same', input_shape=x_train.shape[1:]))
+model.add(Activation('relu'))
+model.add(Conv2D(32, (3, 3)))
+model.add(Activation('relu'))
+model.add(MaxPooling2D(pool_size=(2, 2)))
+model.add(Dropout(0.25))
+
+model.add(Conv2D(64, (3, 3), padding='same'))
+model.add(Activation('relu'))
+model.add(Conv2D(64, (3, 3)))
+model.add(Activation('relu'))
+model.add(MaxPooling2D(pool_size=(2, 2)))
+model.add(Dropout(0.25))
+
+model.add(Flatten())
+model.add(Dense(512))
 model.add(Activation('relu'))
 model.add(Dropout(0.5))
 model.add(Dense(num_classes))
